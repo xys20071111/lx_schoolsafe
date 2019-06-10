@@ -7,3 +7,4 @@ export const GET_CHANG_SHANG_LIST ='changshang/getlist';
 export const getChangShangData = (list) => ({
   type: GET_CHANG_SHANG_LIST, list
 })
+

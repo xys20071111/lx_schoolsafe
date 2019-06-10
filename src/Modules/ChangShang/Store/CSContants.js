@@ -1,5 +1,3 @@
-import React from 'react';
-import { Divider } from 'antd';
 import { createSelector } from 'reselect';
 export const CS_REDUCER_KEY = 'cs';
 const reducerLoading = state => state[CS_REDUCER_KEY].get('loading');
@@ -36,15 +34,4 @@ export const columns = [{
 }, {
   title: '更新时间',
   align: 'center',
-},{
-  title: 'Action',
-  key: 'action',
-  align: 'center',
-  render: (text, record) => (
-    <span>
-      <a href="javascript:;">修改</a>
-      <Divider type="vertical" />
-      <a href="javascript:;">删除</a>
-    </span>
-  ),
-},];
+}];

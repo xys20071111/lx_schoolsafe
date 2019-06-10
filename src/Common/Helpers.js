@@ -41,7 +41,7 @@ export const PostFetch = (url, data) => {
     redirect: 'follow', // manual, *follow, error
     referrer: 'no-referrer', // *client, no-referrer
   }
-  console.log('option:',option)
+  // console.log('option:',option)
   return fetch(url, option)
         .then(response => response.json())
         .catch(error => new Error(error));
