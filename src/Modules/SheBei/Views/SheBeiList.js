@@ -3,13 +3,14 @@ import _ from 'lodash'
 import React, { Component } from 'react';
 import { PostFetch } from 'Common/Helpers';
 import { createStructuredSelector } from 'reselect';
-import { getChangShangData } from '../Store/CSActions';
+import { getSheBeiData, setAllVendors } from '../Store/SBActions';
 import CardHeader from 'Modules/Components/CardHeader';
+import SheBeiFilterForm from 'Modules/SheBei/Views/SheBeiFilterForm';
 import { Table, message, Popconfirm, Divider } from 'antd';
-import { columns, makeSelectLoading, makeSelectList } from '../Store/CSContants';
-import { URL_GET_FIRM_INFO, URL_GET_FIRM_DELETE } from 'Common/Urls';
+import { columns, makeSelectLoading, makeSelectList, makeSelectVendors, getAllVendors } from '../Store/SBContants';
+import { URL_GET_DEVICES_INFO, URL_GET_DEVICES_DELETE } from 'Common/Urls';
 
-class ChangShangList extends Component {
+class SheBeiList extends Component {
   constructor(props) {
     super(props);
     this.columns = columns;
@@ -20,12 +21,12 @@ class ChangShangList extends Component {
         align: 'center',
         render: (record) => (
           <span style={{ cursor: 'pointer' }}>
-            <span key={`changshang-${record.id}-update`} onClick={() => this.handleUpdate(record.id)}>
+            <span key={`shebei-${record.id}-update`} onClick={() => this.handleUpdate(record.id)}>
               修改
             </span>
             <Divider type="vertical" />
-            <Popconfirm title={`确定要删除厂商[${record.name}]吗?`} okText="确定" cancelText="取消" onConfirm={() => this.handleDelete(record.id)}>
-              <span key={`changshang-${record.id}-delete`}>
+            <Popconfirm title={`确定要删除设备[${record.serial}]吗?`} okText="确定" cancelText="取消" onConfirm={() => this.handleDelete(record.id)}>
+              <span key={`shebei-${record.id}-delete`}>
                 删除
               </span>
             </Popconfirm>
@@ -35,7 +36,10 @@ class ChangShangList extends Component {
     }
   }
   componentDidMount() {
+    /** Get All Devics */
     this.handleSearchData();
+    /** Get All Vendors */
+    getAllVendors().then(list => this.props.setAllVendors(list));
   }
   componentWillUnmount() {
     this.columns = null;
@@ -43,37 +47,35 @@ class ChangShangList extends Component {
 
   /** Search */
   handleSearchData = () => {
-    PostFetch(URL_GET_FIRM_INFO, { ids: [] }).then(rs => {
-      this.props.getChangShangData(rs.data);
+    PostFetch(URL_GET_DEVICES_INFO, { ids: [] }).then(rs => {
+      this.props.getSheBeiData(rs.data);
     }).catch(err => message.error(err.msg))
   }
 
   /** Update */
   handleUpdate = id => {
     this.props.history.push({
-      pathname: `/changshang/update/${id}`,
+      pathname: `/shebei/update/${id}`,
       id
     })
   }
 
   /** Delete */
   handleDelete = id => {
-    PostFetch(URL_GET_FIRM_DELETE, { id }).then(rs => {
+    PostFetch(URL_GET_DEVICES_DELETE, { id }).then(rs => {
       message.info('删除成功')
       this.handleSearchData();
     }).catch(err => message.error('删除失败'))
   }
 
   render() {
-    const { history, loading, list } = this.props;
+    const { history, loading, list, vendors } = this.props;
 
     return (
       <div className='lx-school-changshang'>
-        <CardHeader
-          leftTitle='厂商管理'
-          hasActionButton={true}
-          actionButtonLabel='添加厂商'
-          onHandleAction={() => history.push(`/changshang/add`)}
+        <SheBeiFilterForm
+          vendors={vendors}
+          onHandleAction={() => history.push(`/shebei/add`)}
         />
         <Table
           bordered
@@ -92,7 +94,8 @@ class ChangShangList extends Component {
 
 const mapStateToProps = createStructuredSelector({
   list: makeSelectList,
+  vendors: makeSelectVendors,
   loading: makeSelectLoading
 })
 
-export default connect(mapStateToProps, { getChangShangData })(ChangShangList);
+export default connect(mapStateToProps, { getSheBeiData, setAllVendors })(SheBeiList);

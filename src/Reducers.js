@@ -5,6 +5,7 @@
 import { combineReducers } from 'redux';
 import CSReducers from './Modules/ChangShang/Store/CSReducers';
 import { CS_REDUCER_KEY } from './Modules/ChangShang/Store/CSContants';
+import { SB_REDUCER_KEY } from './Modules/SheBei/Store/SBContants';
 import SBReducers from './Modules/SheBei/Store/SBReducers';
 import AZReducer from './Modules/AnZhuang/Store/AZReducers';
 import UseReducer from './Modules/UseInfo/Store/UseReducers';
@@ -16,7 +17,7 @@ import CRReducer from './Modules/CardRecord/Store/CRReducers';
 export default function createReducer(asyncReducers) {
   return combineReducers({
     [CS_REDUCER_KEY]: CSReducers,
-    sb: SBReducers,
+    [SB_REDUCER_KEY]: SBReducers,
     az: AZReducer,
     use: UseReducer,
     card: CBReducer,
