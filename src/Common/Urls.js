@@ -13,3 +13,9 @@ export const URL_GET_DEVICES_INFO       = URL_PREFIX + '/campus/admin/devices';
 export const URL_GET_DEVICES_DELETE     = URL_PREFIX + '/campus/admin/deldevice';
 export const URL_GET_DEVICES_ADD        = URL_PREFIX + '/campus/admin/adddevice';
 export const URL_GET_DEVICES_UPDATE     = URL_PREFIX + '/campus/admin/updatedevice';
+
+//获取位置信息
+export const URL_GET_LOCATIONS_INFO     = URL_PREFIX + '/campus/admin/locations';
+export const URL_GET_LOCATIONS_DELETE   = URL_PREFIX + '/campus/admin/dellocation';
+export const URL_GET_LOCATIONS_UPDATE   = URL_PREFIX + '/campus/admin/updatelocation';
+export const URL_GET_LOCATIONS_ADD      = URL_PREFIX + '/campus/admin/addlocation';

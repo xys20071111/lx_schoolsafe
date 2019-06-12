@@ -1,7 +1,8 @@
 import { createSelector } from 'reselect';
-export const CS_REDUCER_KEY = 'cs';
-const reducerLoading = state => state[CS_REDUCER_KEY].get('loading');
-const reducerList = state => state[CS_REDUCER_KEY].get('list');
+export const AZ_REDUCER_KEY = 'anzhuang';
+
+const reducerLoading = state => state[AZ_REDUCER_KEY].get('loading');
+const reducerList = state => state[AZ_REDUCER_KEY].get('list');
 
 
 export const makeSelectLoading = createSelector(reducerLoading, loading => loading);
@@ -13,19 +14,19 @@ export const columns = [{
   align: 'center',
   dataIndex: 'index'
 }, {
-  title: '厂商名称',
+  title: '学校',
   align: 'center',
-  dataIndex: 'name'
+  dataIndex: 'type'
 }, {
-  title: '厂商地址',
+  title: '位置类型',
   align: 'center',
-  dataIndex: 'address'
+  dataIndex: 'model'
 }, {
-  title: '联系人',
+  title: '位置编号',
   align: 'center',
-  dataIndex: 'contact'
+  dataIndex: 'serial'
 }, {
-  title: '联系电话',
+  title: '位置描述',
   align: 'center',
-  dataIndex: 'phone'
+  dataIndex: 'vendor'
 }];

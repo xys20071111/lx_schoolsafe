@@ -3,13 +3,13 @@ import _ from 'lodash'
 import React, { Component } from 'react';
 import { PostFetch } from 'Common/Helpers';
 import { createStructuredSelector } from 'reselect';
-import { getSheBeiData, setAllVendors } from '../Store/SBActions';
-import SheBeiFilterForm from 'Modules/SheBei/Views/SheBeiFilterForm';
+import AnZhuangFilterForm from './AnZhuangFilterForm';
+import { getAnZhuangPositionData } from '../Store/AZActions';
 import { Table, message, Popconfirm, Divider } from 'antd';
-import { columns, makeSelectLoading, makeSelectList, makeSelectVendors, getAllVendors } from '../Store/SBContants';
-import { URL_GET_DEVICES_INFO, URL_GET_DEVICES_DELETE } from 'Common/Urls';
+import { columns, makeSelectLoading, makeSelectList } from '../Store/AZContants';
+import { URL_GET_LOCATIONS_INFO, URL_GET_LOCATIONS_DELETE } from 'Common/Urls';
 
-class SheBeiList extends Component {
+class AnZhuangList extends Component {
   constructor(props) {
     super(props);
     this.columns = columns;
@@ -35,8 +35,6 @@ class SheBeiList extends Component {
     }
   }
   componentDidMount() {
-    /** Get All Vendors */
-    getAllVendors().then(list => this.props.setAllVendors(list));
     /** Get All Devics */
     this.handleSearchData();
   }
@@ -46,35 +44,35 @@ class SheBeiList extends Component {
 
   /** Search */
   handleSearchData = () => {
-    PostFetch(URL_GET_DEVICES_INFO, { ids: [] }).then(rs => {
-      this.props.getSheBeiData(rs.data);
+    PostFetch(URL_GET_LOCATIONS_INFO, { ids: [] }).then(rs => {
+      console.log('666666666666',rs)
+      this.props.getAnZhuangPositionData(rs.data);
     }).catch(err => message.error(err.msg))
   }
 
   /** Update */
   handleUpdate = id => {
     this.props.history.push({
-      pathname: `/shebei/update/${id}`,
+      pathname: `/anzhuang/update/${id}`,
       id
     })
   }
 
   /** Delete */
   handleDelete = id => {
-    PostFetch(URL_GET_DEVICES_DELETE, { id }).then(rs => {
+    PostFetch(URL_GET_LOCATIONS_DELETE, { id }).then(rs => {
       message.info('删除成功')
       this.handleSearchData();
     }).catch(err => message.error('删除失败'))
   }
 
   render() {
-    const { history, loading, list, vendors } = this.props;
+    const { history, loading, list } = this.props;
 
     return (
       <div className='lx-school-changshang'>
-        <SheBeiFilterForm
-          vendors={vendors}
-          onHandleAction={() => history.push(`/shebei/add`)}
+        <AnZhuangFilterForm
+          onHandleAction={() => history.push(`/anzhuang/add`)}
         />
         <Table
           bordered
@@ -93,8 +91,7 @@ class SheBeiList extends Component {
 
 const mapStateToProps = createStructuredSelector({
   list: makeSelectList,
-  vendors: makeSelectVendors,
   loading: makeSelectLoading
 })
 
-export default connect(mapStateToProps, { getSheBeiData, setAllVendors })(SheBeiList);
+export default connect(mapStateToProps, { getAnZhuangPositionData })(AnZhuangList);

@@ -10,7 +10,9 @@ const homeInitState = fromJS({
 const SBReducer = (state = homeInitState, action) => {
   switch (action.type) {
     case GET_SHE_BEI_LIST: {
-      return state.update('list', () => fromJS(action.list))
+      const { list = [] } = action;
+      const newList = list.filter((item,index) => item.index = index);
+      return state.update('list', () => fromJS(newList))
                   .update('loading', () => false);
     }
     case SET_ALL_VENDORS_DATA: {

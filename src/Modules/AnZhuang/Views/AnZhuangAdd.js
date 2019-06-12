@@ -19,7 +19,7 @@ const formItemLayout = {
 };
 
 
-class SheBeiInputForm extends Component {
+class LocationsFormInputForm extends Component {
   getAllVendors = () => {
     const { vendors = [] } = this.props;
     const allOptions = vendors.map(option => <Option key={option.id} value={option.id}>{option.name}</Option>);
@@ -95,9 +95,9 @@ class SheBeiInputForm extends Component {
   }
 }
 
-const SheBeiForm = Form.create({ name: 'she_bei_add_form' })(SheBeiInputForm)
+const LocationsForm = Form.create({ name: 'she_bei_add_form' })(LocationsFormInputForm)
 
-class SheBeiAdd extends Component {
+class AnZhuangAdd extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -126,25 +126,25 @@ class SheBeiAdd extends Component {
     }
     console.log('5555:', vals)
     PostFetch(urls, { ...vals }).then(rs => {
-      console.log('设备：',rs)
+      console.log('位置：',rs)
       message.info(`${msg}成功`);
     }).catch(err => {
-      message.info(`${msg}设备信息失败`)
-      console.log(`${msg}设备信息失败`,err)
+      message.info(`${msg}位置信息失败`)
+      console.log(`${msg}位置信息失败`,err)
     })
   }
 
   render() {
     const { editData } = this.state;
     const { history, type = 'add', vendors } = this.props;
-    const headerTitle = type === 'update' ? '设备修改' : '添加设备';
+    const headerTitle = type === 'update' ? '位置修改' : '添加位置';
     return (
       <div className='lx-school-action'>
         <CardHeader
-          leftTitle='设备管理'
+          leftTitle='安装位置'
           leftTitleChildren={[ headerTitle ]}
         />
-        <SheBeiForm
+        <LocationsForm
           vendors={vendors}
           editData={editData}
           goBackPage={() => history.goBack()}
@@ -160,4 +160,4 @@ const mapStateToProps = createStructuredSelector({
   vendors: makeSelectVendors
 })
 
-export default connect(mapStateToProps)(SheBeiAdd);
+export default connect(mapStateToProps)(AnZhuangAdd);

@@ -1,7 +1,15 @@
 import { createSelector } from 'reselect';
+import _ from 'lodash';
 import { PostFetch } from 'Common/Helpers';
 import { URL_GET_FIRM_INFO } from 'Common/Urls';
 export const SB_REDUCER_KEY = 'shebei';
+export const SB_SELECT_OPTIONS = [
+  {
+    id: 0,
+    name: '通用设备'
+  }
+]
+
 const reducerLoading = state => state[SB_REDUCER_KEY].get('loading');
 const reducerList = state => state[SB_REDUCER_KEY].get('list');
 const reducerVendors = state => state[SB_REDUCER_KEY].get('vendors');
@@ -15,11 +23,12 @@ export const makeSelectVendors = createSelector(reducerVendors, list => list.toJ
 export const columns = [{
   title: '序号',
   align: 'center',
-  dataIndex: 'id',
+  dataIndex: 'index'
 }, {
   title: '设备类型',
   align: 'center',
-  dataIndex: 'type'
+  dataIndex: 'type',
+  render: id => _.find(SB_SELECT_OPTIONS, item => _.isEqual(item.id, id)).name,
 }, {
   title: '设备型号',
   align: 'center',
@@ -32,12 +41,6 @@ export const columns = [{
   title: '厂商名称',
   align: 'center',
   dataIndex: 'vendor'
-}, {
-  title: '录入时间',
-  align: 'center',
-}, {
-  title: '更新时间',
-  align: 'center',
 }];
 
 
