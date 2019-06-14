@@ -1,6 +1,6 @@
 import React from 'react';
-import { SB_SELECT_OPTIONS } from 'Modules/SheBei/Store/SBContants';
-import { Form, Row, Col, Input, Button, Select, Card } from 'antd';
+import { AZ_POSITION_NUMBER_OPTIONS } from 'Modules/AnZhuang/Store/AZContants';
+import { Form, Row, Col, Input, Button, Select, Card, InputNumber } from 'antd';
 const { Option } = Select;
 
 
@@ -11,24 +11,27 @@ class LocationsFilter extends React.Component {
 
   getFields() {
     const { getFieldDecorator } = this.props.form;
-    const options = SB_SELECT_OPTIONS.map(option => <Option key={option.id} value={option.id}>{option.name}</Option>);
+    const options = AZ_POSITION_NUMBER_OPTIONS.map(option => <Option key={`anzhuang_type_${option.id}`} value={option.id}>{option.name}</Option>);
 
     return (
       <Row gutter={25}>
         <Col span={5}>
           <Form.Item label='学校id'>
-            {getFieldDecorator('school')(<Input />)}
+            {getFieldDecorator('school')(<Input placeholder='请输入学校Id'/>)}
           </Form.Item>
         </Col>
 
         <Col span={5}>
           <Form.Item label='位置类型' >
-            {getFieldDecorator('type')(<Select placeholder='请选择设备类型'>{options}</Select>)}
+            {getFieldDecorator('type')(<Select placeholder='请选择位置类型'>
+              <Option value={-1}>全部</Option>
+              {options}
+            </Select>)}
           </Form.Item>
         </Col>
         <Col span={5}>
-          <Form.Item label='安装位置' >
-            {getFieldDecorator('number')(<Input />)}
+          <Form.Item label='位置编号' >
+            {getFieldDecorator('number')(<InputNumber min={0} max={99999999999999} placeholder='请输入位置编号' />)}
           </Form.Item>
         </Col>
         <Col span={8}>
@@ -50,7 +53,12 @@ class LocationsFilter extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, fieldsValue) => {
       if (!err) {
-        console.log('Received values of form: ', fieldsValue);
+        const params = {
+          school: (fieldsValue.school === '' || !fieldsValue.school) ? undefined : parseInt(fieldsValue.school),
+          type: (fieldsValue.type === -1 || !fieldsValue.type) ? undefined : fieldsValue.type,
+        }
+        console.log('params:', params, fieldsValue)
+        this.props.onHandleSearch(params);
       }
     });
   }

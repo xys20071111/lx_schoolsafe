@@ -24,7 +24,7 @@ class AnZhuangList extends Component {
               修改
             </span>
             <Divider type="vertical" />
-            <Popconfirm title={`确定要删除设备[${record.serial}]吗?`} okText="确定" cancelText="取消" onConfirm={() => this.handleDelete(record.id)}>
+            <Popconfirm title={`确定要删除当前记录吗?`} okText="确定" cancelText="取消" onConfirm={() => this.handleDelete(record.id)}>
               <span key={`shebei-${record.id}-delete`}>
                 删除
               </span>
@@ -43,8 +43,8 @@ class AnZhuangList extends Component {
   }
 
   /** Search */
-  handleSearchData = () => {
-    PostFetch(URL_GET_LOCATIONS_INFO, { ids: [] }).then(rs => {
+  handleSearchData = (params) => {
+    PostFetch(URL_GET_LOCATIONS_INFO, { ...params }).then(rs => {
       console.log('666666666666',rs)
       this.props.getAnZhuangPositionData(rs.data);
     }).catch(err => message.error(err.msg))
@@ -72,6 +72,7 @@ class AnZhuangList extends Component {
     return (
       <div className='lx-school-changshang'>
         <AnZhuangFilterForm
+          onHandleSearch={params => this.handleSearchData(params)}
           onHandleAction={() => history.push(`/anzhuang/add`)}
         />
         <Table

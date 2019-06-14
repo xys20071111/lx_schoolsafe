@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import { PostFetch } from 'Common/Helpers';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
 import CardHeader from 'Modules/Components/CardHeader';
-import { makeSelectVendors, SB_SELECT_OPTIONS } from 'Modules/SheBei/Store/SBContants';
-import { Form, Input, Button, Card, Row, Col, Icon, message, Select } from 'antd';
-import { URL_GET_DEVICES_ADD, URL_GET_DEVICES_INFO, URL_GET_DEVICES_UPDATE } from 'Common/Urls';
+import { AZ_POSITION_NUMBER_OPTIONS } from 'Modules/AnZhuang/Store/AZContants';
+import { Form, Input, Button, Card, Row, Col, Icon, message, Select, TimePicker, InputNumber } from 'antd';
+import { URL_GET_LOCATIONS_ADD, URL_GET_LOCATIONS_INFO, URL_GET_LOCATIONS_UPDATE } from 'Common/Urls';
 const { Option } = Select;
+const { TextArea } = Input;
 const formItemLayout = {
   labelCol: {
     xs: { span: 12 },
@@ -20,32 +20,61 @@ const formItemLayout = {
 
 
 class LocationsFormInputForm extends Component {
-  getAllVendors = () => {
-    const { vendors = [] } = this.props;
-    const allOptions = vendors.map(option => <Option key={option.id} value={option.id}>{option.name}</Option>);
-    return <Select placeholder='请选择厂商'>{allOptions}</Select>;
+  getAllTypes = () => {
+    const allOptions = AZ_POSITION_NUMBER_OPTIONS.map(option => <Option key={option.id} value={option.id}>{option.name}</Option>);
+    return <Select placeholder='请选择位置类型'>{allOptions}</Select>;
   }
 
   getFileds = () => {
-    const { editData } = this.props;
+    const { editData, type } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const options = SB_SELECT_OPTIONS.map(option => <Option key={option.id} value={option.id}>{option.name}</Option>);
+    const disabled = (type === 'update') ? true : false;
+
     return (
       <Card>
-        <Form.Item {...formItemLayout} label='设备类型' >
-          {getFieldDecorator('type')(<Select placeholder='请选择设备类型'>{options}</Select>)}
+        <Form.Item {...formItemLayout} label='学校ID' >
+          {getFieldDecorator('school', {
+            rules: [{ required: true, message: '请输入学校ID' }],
+            initialValue: editData.school
+          })(<InputNumber min={0} max={99999999999999} placeholder='请输入学校ID' disabled={disabled}/>)}
         </Form.Item>
 
-        <Form.Item {...formItemLayout} label='设备型号'>
-          {getFieldDecorator('model', { initialValue: editData.model })(<Input placeholder='请输入设备型号' />)}
+        {disabled && <Form.Item {...formItemLayout} label='学校名称' >
+          {getFieldDecorator('school_name', {
+            initialValue: editData.school_name
+          })(<Input disabled={disabled} />)}
+        </Form.Item>}
+
+        <Form.Item label='位置编号' {...formItemLayout}>
+          {getFieldDecorator('number', {
+            rules: [{ required: true, message: '请输入位置编号' }],
+            initialValue: editData.number
+          })(<InputNumber min={0} max={99999999999999} placeholder='请输入位置编号' />)}
         </Form.Item>
 
-        <Form.Item label='设备序列号' {...formItemLayout}>
-          {getFieldDecorator('serial', { initialValue: editData.serial })(<Input />)}
+        <Form.Item {...formItemLayout} label='位置类型'>
+          {getFieldDecorator('type', {
+            rules: [{ required: true, message: '请选择位置类型' }],
+            initialValue: editData.type
+          })(this.getAllTypes())}
         </Form.Item>
 
-        <Form.Item label='设备厂商' {...formItemLayout}>
-          {getFieldDecorator('vendor', { initialValue: editData.vendor })(this.getAllVendors())}
+        {/* <Row gutter={16}>
+          <Col span={4} offset={7}>
+            <Form.Item label='开门时间' {...formItemLayout}>
+              {getFieldDecorator('open_time', { initialValue: moment(editData.open_time, 'HH:mm:ss') })(<TimePicker format={format} />)}
+            </Form.Item>
+          </Col>
+
+          <Col span={4}>
+            <Form.Item label='关门时间' {...formItemLayout2}>
+              {getFieldDecorator('close_time')(<TimePicker format={format} />)}
+            </Form.Item>
+          </Col>
+        </Row> */}
+
+        <Form.Item label='位置描述' {...formItemLayout}>
+          {getFieldDecorator('brief', { initialValue: editData.brief })(<TextArea rows={5} placeholder='请输入位置描述'/>)}
         </Form.Item>
 
         <Row gutter={16}>
@@ -76,10 +105,10 @@ class LocationsFormInputForm extends Component {
       if (!err) {
         const values = {
           id: this.props.editData.id,
+          school: fieldsValue.school,
           type: fieldsValue['type'],
-          model: fieldsValue['model'],
-          serial: fieldsValue['serial'],
-          vendor: parseInt(fieldsValue['vendor']),
+          number: fieldsValue['number'],
+          brief: fieldsValue['brief'],
         };
         this.props.onHandleSearch(values);
       }
@@ -95,7 +124,7 @@ class LocationsFormInputForm extends Component {
   }
 }
 
-const LocationsForm = Form.create({ name: 'she_bei_add_form' })(LocationsFormInputForm)
+const LocationsForm = Form.create({ name: 'an_zhuang_add_form' })(LocationsFormInputForm)
 
 class AnZhuangAdd extends Component {
   constructor(props) {
@@ -108,7 +137,7 @@ class AnZhuangAdd extends Component {
 
   componentDidMount() {
     if (this.state.editDataId) {
-      PostFetch(URL_GET_DEVICES_INFO, { ids: [this.state.editDataId] }).then(rs => {
+      PostFetch(URL_GET_LOCATIONS_INFO, { ids: [this.state.editDataId] }).then(rs => {
         if (rs.result === 0 && rs.data && rs.data.length > 0) {
           this.setState({ editData: rs.data[0] })
         }
@@ -119,18 +148,17 @@ class AnZhuangAdd extends Component {
   /** save */
   onHandleSubmit = (vals) => {
     const { type = 'add' } = this.props;
-    let [urls,msg] = [URL_GET_DEVICES_ADD, '添加'];
+    let [urls,msg] = [URL_GET_LOCATIONS_ADD, '添加'];
     if (type === 'update') {
-      urls = URL_GET_DEVICES_UPDATE;
+      urls = URL_GET_LOCATIONS_UPDATE;
       msg = '更新'
     }
-    console.log('5555:', vals)
+    console.log('5555555555555:',vals)
     PostFetch(urls, { ...vals }).then(rs => {
-      console.log('位置：',rs)
+      console.log('6666666666666:',rs)
       message.info(`${msg}成功`);
     }).catch(err => {
       message.info(`${msg}位置信息失败`)
-      console.log(`${msg}位置信息失败`,err)
     })
   }
 
@@ -145,6 +173,7 @@ class AnZhuangAdd extends Component {
           leftTitleChildren={[ headerTitle ]}
         />
         <LocationsForm
+          type={type}
           vendors={vendors}
           editData={editData}
           goBackPage={() => history.goBack()}
@@ -155,9 +184,4 @@ class AnZhuangAdd extends Component {
   }
 }
 
-
-const mapStateToProps = createStructuredSelector({
-  vendors: makeSelectVendors
-})
-
-export default connect(mapStateToProps)(AnZhuangAdd);
+export default AnZhuangAdd;
