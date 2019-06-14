@@ -1,26 +1,16 @@
 import React, { Component } from 'react';
-import { message } from 'antd';
+import { Route } from "react-router-dom";
+import { HashRouter as Router} from "react-router-dom";
+import CardBindList from './Views/CardBindList';
 
-
-
-class CardBind extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: false,
-    }
-  }
-
+class CardBindContainer extends Component {
   render() {
     return (
-      <div className='salf-cardbind'>
-        card bind
-      </div>
-    )
+      <Router >
+        <Route exact path="/cardbind" component={CardBindList} />
+      </Router>
+    );
   }
 }
 
-
-
-export default (CardBind);
-
+export default CardBindContainer;

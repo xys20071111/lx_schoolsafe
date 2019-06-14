@@ -7,6 +7,7 @@ import CSReducers from './Modules/ChangShang/Store/CSReducers';
 import { CS_REDUCER_KEY } from './Modules/ChangShang/Store/CSContants';
 import { SB_REDUCER_KEY } from './Modules/SheBei/Store/SBContants';
 import { AZ_REDUCER_KEY } from './Modules/AnZhuang/Store/AZContants';
+import { CB_REDUCER_KEY } from './Modules/CardBind/Store/CBContants';
 import SBReducers from './Modules/SheBei/Store/SBReducers';
 import AZReducer from './Modules/AnZhuang/Store/AZReducers';
 import UseReducer from './Modules/UseInfo/Store/UseReducers';
@@ -20,8 +21,8 @@ export default function createReducer(asyncReducers) {
     [CS_REDUCER_KEY]: CSReducers,
     [SB_REDUCER_KEY]: SBReducers,
     [AZ_REDUCER_KEY]: AZReducer,
+    [CB_REDUCER_KEY]: CBReducer,
     use: UseReducer,
-    card: CBReducer,
     cardRecord: CRReducer,
     ...asyncReducers
   });
