@@ -11,7 +11,10 @@ const SBReducer = (state = homeInitState, action) => {
   switch (action.type) {
     case GET_SHE_BEI_LIST: {
       const { list = [] } = action;
-      const newList = list.filter((item,index) => item.index = index);
+      const newList = list.map((item,index) => {
+        item.index = index + 1;
+        return item;
+      });
       return state.update('list', () => fromJS(newList))
                   .update('loading', () => false);
     }

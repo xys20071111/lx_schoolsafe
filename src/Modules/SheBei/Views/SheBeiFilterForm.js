@@ -56,7 +56,12 @@ class SheBeiFilter extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, fieldsValue) => {
       if (!err) {
-        console.log('Received values of form: ', fieldsValue);
+        const params = {
+          vendor: fieldsValue.vendor,
+          type: fieldsValue.type,
+          model: fieldsValue.model === '' ? undefined : fieldsValue.model
+        }
+        this.props.onHandleSearch(params);
       }
     });
   }

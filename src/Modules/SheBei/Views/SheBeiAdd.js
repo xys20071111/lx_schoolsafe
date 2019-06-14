@@ -33,7 +33,7 @@ class SheBeiInputForm extends Component {
     return (
       <Card>
         <Form.Item {...formItemLayout} label='设备类型' >
-          {getFieldDecorator('type')(<Select placeholder='请选择设备类型'>{options}</Select>)}
+          {getFieldDecorator('type', { initialValue: editData.type })(<Select placeholder='请选择设备类型'>{options}</Select>)}
         </Form.Item>
 
         <Form.Item {...formItemLayout} label='设备型号'>
@@ -41,7 +41,7 @@ class SheBeiInputForm extends Component {
         </Form.Item>
 
         <Form.Item label='设备序列号' {...formItemLayout}>
-          {getFieldDecorator('serial', { initialValue: editData.serial })(<Input />)}
+          {getFieldDecorator('serial', { initialValue: editData.serial })(<Input placeholder='请输入序列号' />)}
         </Form.Item>
 
         <Form.Item label='设备厂商' {...formItemLayout}>
@@ -124,13 +124,10 @@ class SheBeiAdd extends Component {
       urls = URL_GET_DEVICES_UPDATE;
       msg = '更新'
     }
-    console.log('5555:', vals)
     PostFetch(urls, { ...vals }).then(rs => {
-      console.log('设备：',rs)
       message.info(`${msg}成功`);
     }).catch(err => {
       message.info(`${msg}设备信息失败`)
-      console.log(`${msg}设备信息失败`,err)
     })
   }
 

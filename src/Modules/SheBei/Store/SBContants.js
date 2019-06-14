@@ -28,7 +28,13 @@ export const columns = [{
   title: '设备类型',
   align: 'center',
   dataIndex: 'type',
-  render: id => _.find(SB_SELECT_OPTIONS, item => _.isEqual(item.id, id)).name,
+  render: id => {
+    const lmp = _.find(SB_SELECT_OPTIONS, item => _.isEqual(item.id, id));
+    if (lmp) {
+      return lmp.name;
+    }
+    return '';
+  }
 }, {
   title: '设备型号',
   align: 'center',
@@ -40,7 +46,7 @@ export const columns = [{
 }, {
   title: '厂商名称',
   align: 'center',
-  dataIndex: 'vendor'
+  dataIndex: 'vendor_name'
 }];
 
 

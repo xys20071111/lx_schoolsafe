@@ -45,8 +45,8 @@ class SheBeiList extends Component {
   }
 
   /** Search */
-  handleSearchData = () => {
-    PostFetch(URL_GET_DEVICES_INFO, { ids: [] }).then(rs => {
+  handleSearchData = (params) => {
+    PostFetch(URL_GET_DEVICES_INFO, { ...params }).then(rs => {
       this.props.getSheBeiData(rs.data);
     }).catch(err => message.error(err.msg))
   }
@@ -69,11 +69,11 @@ class SheBeiList extends Component {
 
   render() {
     const { history, loading, list, vendors } = this.props;
-
     return (
       <div className='lx-school-changshang'>
         <SheBeiFilterForm
           vendors={vendors}
+          onHandleSearch={param => this.handleSearchData(param)}
           onHandleAction={() => history.push(`/shebei/add`)}
         />
         <Table
