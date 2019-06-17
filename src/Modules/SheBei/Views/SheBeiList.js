@@ -62,7 +62,7 @@ class SheBeiList extends Component {
   /** Delete */
   handleDelete = id => {
     PostFetch(URL_GET_DEVICES_DELETE, { id }).then(rs => {
-      message.info('删除成功')
+      message.success('删除成功')
       this.handleSearchData();
     }).catch(err => message.error('删除失败'))
   }

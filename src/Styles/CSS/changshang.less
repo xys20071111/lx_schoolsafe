@@ -4,6 +4,24 @@
   height: 100%;
   width: 100%;
   background: #fff;
+
+  .ant-layout {
+    background: #fff;
+  }
+  .ant-layout-sider {
+    padding: 20px;
+    background: #fff;
+    .ant-layout-sider-children {
+      border: 1px solid #f0f2f5;
+      .ant-menu-item {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        border-bottom: 1px solid #e8e8e8;
+      }
+    }
+  }
+
   .shebei-search-form .ant-form-item {
     display: flex;
     align-items: center;
@@ -47,6 +65,64 @@
     margin: 20px;
     .ant-input-number {
       width: 260px;
+    }
+  }
+
+  .select_date_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    textarea {
+      width: 50%;
+      margin-left: 10%;
+    }
+  }
+
+  .select_date_title {
+    display: flex;
+    align-items: center;
+    .ant-card {
+      margin: 0px;
+      min-height: 300px;
+    }
+    .ant-card-body {
+      padding: 10px;
+    }
+    &_card {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      .ant-card-body {
+        width: 100%;
+      }
+      &.nodate {
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+  .select_date {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border: 1px dashed #ddd;
+    margin-bottom: 10px;
+    .left {
+      text-align: center;
+      width: 25%;
+      font-size: 23px;
+      color: #03c0ab;
+    }
+    .content {
+      width: 67%;
+      font-size: 20px;
+    }
+    .right {
+      color: red;
+      width: 8%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }

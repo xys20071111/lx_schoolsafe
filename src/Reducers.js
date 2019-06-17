@@ -3,16 +3,18 @@
  * If we were to do this in store.js, reducers wouldn't be hot reloadable.
  */
 import { combineReducers } from 'redux';
-import CSReducers from './Modules/ChangShang/Store/CSReducers';
 import { CS_REDUCER_KEY } from './Modules/ChangShang/Store/CSContants';
 import { SB_REDUCER_KEY } from './Modules/SheBei/Store/SBContants';
 import { AZ_REDUCER_KEY } from './Modules/AnZhuang/Store/AZContants';
 import { CB_REDUCER_KEY } from './Modules/CardBind/Store/CBContants';
+import { USE_REDUCER_KEY } from './Modules/UseInfo/Store/UseContants';
+import { ADD_HOLIDAY_REDUCER_KEY } from './Modules/AddHoliday/Store/AddHContants';
+import CSReducers from './Modules/ChangShang/Store/CSReducers';
 import SBReducers from './Modules/SheBei/Store/SBReducers';
 import AZReducer from './Modules/AnZhuang/Store/AZReducers';
 import UseReducer from './Modules/UseInfo/Store/UseReducers';
 import CBReducer from './Modules/CardBind/Store/CBReducers';
-import CRReducer from './Modules/CardRecord/Store/CRReducers';
+import AddHolidayReducer from './Modules/AddHoliday/Store/AddHReducers';
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
@@ -22,8 +24,8 @@ export default function createReducer(asyncReducers) {
     [SB_REDUCER_KEY]: SBReducers,
     [AZ_REDUCER_KEY]: AZReducer,
     [CB_REDUCER_KEY]: CBReducer,
-    use: UseReducer,
-    cardRecord: CRReducer,
+    [USE_REDUCER_KEY]: UseReducer,
+    [ADD_HOLIDAY_REDUCER_KEY]: AddHolidayReducer,
     ...asyncReducers
   });
 }
