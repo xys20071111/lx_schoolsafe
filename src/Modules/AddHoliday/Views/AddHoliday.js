@@ -67,8 +67,16 @@ class AddHolidayInputForm extends Component {
         return (
           <div className='select_date' key={`add_holiday_selected_date_${date.key}`}>
             <div className='left'>{date.date}</div>
-            <div className='content'>{date.brief}</div>
-            <div className='right'><Icon type='delete' /></div>
+            <div className='content'>
+              <TextArea
+                rows={1}
+                autosize={true}
+                value={date.brief}
+                placeholder='请输入日期描述'
+                onChange={e => this.updateSelectedDateItemDesc(e.target.value, date.key)}
+              />
+            </div>
+            <div className='right' onClick={() => this.deleteSelectedDate(date.date)}><Icon type='delete' /></div>
           </div>
         )
       })
@@ -124,6 +132,20 @@ class AddHolidayInputForm extends Component {
       })
     }
     this.setState({ textAreaText: val, dates: newDates })
+  }
+
+  /**修改已选的单个日期的描述 */
+  updateSelectedDateItemDesc = (val, index) => {
+    const statedDates = this.state.dates;
+    statedDates[index].brief = val;
+    this.setState({ dates: statedDates });
+  }
+
+  /**删除已选中的日期 */
+  deleteSelectedDate = (date) => {
+    const { dates } = this.state;
+    const removedArray = _.filter(dates, item => item.date !== date);
+    this.setState({ dates: removedArray });
   }
 
   getFileds = () => {

@@ -24,6 +24,7 @@ export const URL_GET_LOCATIONS_ADD      = URL_PREFIX + '/campus/admin/addlocatio
 
 //绑卡信息查询
 export const URL_GET_CARD_BIND_INFO     = URL_PREFIX + '/campus/admin/bindinfo';
+export const URL_DELETE_CARD_BIND     = URL_PREFIX + '/campus/admin/unbindcard';
 
 
 //添加节假日
