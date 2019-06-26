@@ -4,15 +4,13 @@ import moment from 'moment';
 export const CB_REDUCER_KEY = 'cardbind';
 const reducerLoading = state => state[CB_REDUCER_KEY].get('loading');
 const reducerList = state => state[CB_REDUCER_KEY].get('list');
+const reducerFilter = state => state[CB_REDUCER_KEY].get('filter');
 export const makeSelectLoading = createSelector(reducerLoading, loading => loading);
 export const makeSelectList = createSelector(reducerList, list => list ? list.toJS() : []);
+export const makeSelectFilter = createSelector(reducerFilter, filter => filter ? filter.toJS() : {});
 
 /** table columns */
 export const columns = [{
-  title: '序号',
-  align: 'center',
-  dataIndex: 'index'
-}, {
   title: '卡号',
   align: 'center',
   dataIndex: 'card'

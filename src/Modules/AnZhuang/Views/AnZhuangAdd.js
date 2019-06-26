@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import moment from 'moment';
 import { PostFetch } from 'Common/Helpers';
 import CardHeader from 'Modules/Components/CardHeader';
 import { AZ_POSITION_NUMBER_OPTIONS } from 'Modules/AnZhuang/Store/AZContants';
-import { Form, Input, Button, Card, Row, Col, Icon, message, Select, TimePicker, InputNumber } from 'antd';
+import { Form, Input, Button, Card, Row, Col, Icon, message, Select, InputNumber } from 'antd';
 import { URL_GET_LOCATIONS_ADD, URL_GET_LOCATIONS_INFO, URL_GET_LOCATIONS_UPDATE } from 'Common/Urls';
 const { Option } = Select;
 const { TextArea } = Input;

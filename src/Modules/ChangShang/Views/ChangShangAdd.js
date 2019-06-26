@@ -53,7 +53,19 @@ class ChangShangInputForm extends Component {
         </Form.Item>
 
         <Form.Item label='联系电话' {...formItemLayout}>
-          {getFieldDecorator('phone', { initialValue: editData.phone })(<Input addonBefore={prefixSelector} style={{ width: '100%' }} />)}
+          {getFieldDecorator('phone', {
+            initialValue: editData.phone,
+            rules: [
+              {
+                message:'只能输入数字',
+                pattern: /^[0-9]+$/
+              },
+              {
+                len: 11,
+                message: '长度需11个数字',
+              }
+            ]
+          })(<Input addonBefore={prefixSelector} style={{ width: '100%' }} />)}
         </Form.Item>
 
         <Row gutter={16}>

@@ -1,7 +1,8 @@
-let URL_PREFIX = 'http://172.16.0.100:8080';
+// let URL_PREFIX = 'http://172.16.0.100:8080';
 // let URL_PREFIX = 'http://47.95.116.222';
+let URL_PREFIX = 'http://school.app.ljlx.com';
 if (process.env.NODE_ENV === 'development') {
-    // URL_PREFIX =  'http://47.95.116.222';
+    URL_PREFIX =  'http://school.app.ljlx.com';
 }
 //获取厂商信息
 export const URL_GET_FIRM_INFO         = URL_PREFIX + '/campus/admin/vendors';

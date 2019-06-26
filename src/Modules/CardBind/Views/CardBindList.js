@@ -5,34 +5,32 @@ import { PostFetch } from 'Common/Helpers';
 import { createStructuredSelector } from 'reselect';
 import CardBindFilterForm from 'Modules/CardBind/Views/CardBindFilterForm';
 import { Table, message, Popconfirm, Divider } from 'antd';
-import { columns, makeSelectLoading, makeSelectList, makeSelectFilter } from '../Store/CBContants';
+import { columns, makeSelectList, makeSelectFilter, makeSelectLoading } from '../Store/CBContants';
 import { URL_GET_CARD_BIND_INFO, URL_DELETE_CARD_BIND } from 'Common/Urls';
-import { getCardBindData } from '../Store/CBActions';
-const DEFAULT_PAGE_SIZE = 10;
+import * as cbActions from '../Store/CBActions';
 
 
 class CardBindList extends Component {
   constructor(props) {
     super(props);
     this.columns = columns;
-    this.state = {
-      loading: false,
-      list: [],
-      total: 0,
-      pageindex: 0,
-      pagesize: DEFAULT_PAGE_SIZE,
-      filter: {},
-      currentPage: 0
-    }
-
     if (!_.find(this.columns, item => item.key && item.key === 'action')) {
+      this.columns.splice(0, 0, {
+        title: '序号',
+        align: 'center',
+        key: 'id',
+        render:(text,record,index) => {
+          return <span>{(this.props.filter.pageindex) * this.props.filter.pagesize + (index+1)}</span>
+        },
+      });
+
       this.columns.push({
         title: 'Action',
         key: 'action',
         align: 'center',
         render: (record) => (
           <span style={{ cursor: 'pointer' }}>
-            <span key={`cardbind-${record.id}-update`} onClick={() => this.handleUpdate(record.id)}>
+            <span key={`cardbind-${record.id}-update`} onClick={() => this.handleUpdate(record.id, record)}>
               修改
             </span>
             <Divider type="vertical" />
@@ -47,47 +45,35 @@ class CardBindList extends Component {
     }
   }
   componentDidMount() {
-    this.handleSearchData();
+    if (this.props.history.action === 'POP') {
+      this.handleSearchData();
+    }
   }
   componentWillUnmount() {
     this.columns = null;
   }
 
   /** Search */
-  handleSearchData = (_param = undefined) => {
-    let filterParam = {};
-    let [_pageIndex, _pageSize] = [0,DEFAULT_PAGE_SIZE]
-    if (_param) {
-      filterParam = _param;
-      _pageSize = _param.pagesize;
-      _pageIndex = _param.pageindex;
-    } else {
-      const { filter, pageindex, pagesize } = this.state;
-      filterParam = Object.assign(filter, { pageindex, pagesize });
-      console.log(filterParam);
+  handleSearchData = (current, page) => {
+    const { pageindex, pagesize, cid, sid } = this.props.filter;
+    const params = {
+      cid: cid,
+      sid: sid,
+      pageindex: current ? current : pageindex,
+      pagesize: page ? page : pagesize
+    };
+    if (current === 0) {
+      params.pageindex = 0;
     }
-
-    PostFetch(URL_GET_CARD_BIND_INFO, { ...filterParam }).then(rs => {
-      const list = rs.data || [];
-      const newList = list.map((item,index) => {
-        item.index = parseInt((this.state.currentPage * this.state.pagesize) + (index + 1));
-        return item;
-      });
-
-      this.setState({
-        loading: false,
-        list: newList,
-        total: rs.count,
-        pageindex: this.state.pageindex,
-        currentPage: _pageIndex,
-        pagesize: _pageSize
-      })
+    console.log('ssssssssssss',params)
+    PostFetch(URL_GET_CARD_BIND_INFO, params).then(rs => {
+      this.props.getCardBindData(rs.data, rs.count);
     }).catch(err => message.error(err.msg))
   }
 
   /** Update */
-  handleUpdate = id => {
-    this.props.history.push({ pathname: `/cardbind/update/${id}`, id });
+  handleUpdate = (id, record) => {
+    this.props.history.push({ pathname: `/cardbind/update/${id}`, id, record });
   }
 
   /** Delete */
@@ -98,27 +84,21 @@ class CardBindList extends Component {
     }).catch(err => message.error('删除失败'))
   }
 
-  /**切换table分页数据 */
-  tablePagination = (current = undefined, changeSize = DEFAULT_PAGE_SIZE) => {
-    const { filter } = this.state;
-    const params = {
-      cid: filter.cid,
-      sid: filter.sid,
-      pagesize: changeSize,
-      pageindex: current
-    }
-    console.log('pagination:', params)
+  tablePagination = (current, changeSize) => {
+    this.handleSearchData(current - 1, changeSize);
   }
 
   render() {
-    const { loading, list, total, pagesize } = this.state;
+    const { list, filter, loading } = this.props;
     return (
       <div className='lx-school-changshang'>
         <CardBindFilterForm
+          filter={filter}
+          onResetDate={() => {
+            this.props.resetDate(call => this.handleSearchData());
+          }}
           onHandleSearch={param => {
-            this.setState({
-              filter: param
-            }, () => this.handleSearchData())
+            this.props.changeFilterValue(param.cid, param.sid, call => this.handleSearchData());
           }}
         />
         <Table
@@ -130,14 +110,21 @@ class CardBindList extends Component {
           loading={loading}
           locale={{ emptyText: '暂无数据' }}
           pagination={{
-            total,
-            pageSize: pagesize,
+            total: filter.total,
+            pageSize: filter.pagesize,
+            //defaultCurrent: filter.pageindex + 1,
             showSizeChanger: true,
             pageSizeOptions: ['10','20','30','50','100'],
-            onShowSizeChange: (current, changeSize) => this.tablePagination(current, changeSize),
-            onChange: (current) => this.tablePagination(current),
+            onShowSizeChange: (current, changeSize) => {
+              this.tablePagination(current, changeSize);
+              this.props.changePageSize(changeSize);
+            },
+            onChange: (current) => {
+              this.tablePagination(current);
+              this.props.changePageIndex(current);
+            },
             showTotal: function () {  //设置显示一共几条数据
-              return '共 ' + total + ' 条数据';
+              return '共 ' + filter.total + ' 条数据';
             }
           }}
         />
@@ -146,4 +133,11 @@ class CardBindList extends Component {
   }
 }
 
-export default CardBindList;
+
+const mapStateToProps = createStructuredSelector({
+  loading: makeSelectLoading,
+  list: makeSelectList,
+  filter: makeSelectFilter
+})
+
+export default connect(mapStateToProps, { ...cbActions })(CardBindList);

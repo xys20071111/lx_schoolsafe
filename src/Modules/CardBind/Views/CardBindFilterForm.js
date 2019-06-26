@@ -5,22 +5,24 @@ import { Form, Row, Col, InputNumber, Button, Card } from 'antd';
 class CardBindFilter extends React.Component {
   handleReset = () => {
     this.props.form.resetFields();
+    this.props.onResetDate();
   }
 
   getFields() {
+    const { filter } = this.props;
     const { getFieldDecorator } = this.props.form;
 
     return (
       <Row gutter={20}>
         <Col span={5}>
           <Form.Item label='学校ID' >
-            {getFieldDecorator('sid')(<InputNumber min={0} max={99999999999999} placeholder='请输入学校ID' />)}
+            {getFieldDecorator('sid', { initialValue: filter.sid })(<InputNumber min={0} max={99999999999999} placeholder='请输入学校ID' />)}
           </Form.Item>
         </Col>
 
         <Col span={5}>
           <Form.Item label='班级ID'>
-            {getFieldDecorator('cid')(<InputNumber min={0} max={99999999999999} placeholder='请输入班级ID' />)}
+            {getFieldDecorator('cid', { initialValue: filter.cid })(<InputNumber min={0} max={99999999999999} placeholder='请输入班级ID' />)}
           </Form.Item>
         </Col>
 
