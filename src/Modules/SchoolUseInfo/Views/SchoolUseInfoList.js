@@ -2,15 +2,15 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import React, { Component } from 'react';
 import { PostFetch } from 'Common/Helpers';
+import * as schoolUseActions from '../Store/SchoolUseActions';
 import { createStructuredSelector } from 'reselect';
-import CardBindFilterForm from 'Modules/CardBind/Views/CardBindFilterForm';
+import SchoolUseInfoFilterForm from 'Modules/SchoolUseInfo/Views/SchoolUseInfoFilterForm';
 import { Table, message, Popconfirm, Divider } from 'antd';
-import { columns, makeSelectList, makeSelectFilter, makeSelectLoading } from '../Store/CBContants';
-import { URL_GET_CARD_BIND_INFO, URL_DELETE_CARD_BIND } from 'Common/Urls';
-import * as cbActions from '../Store/CBActions';
+import { getAllVendors } from 'Modules/SheBei/Store/SBContants';
+import { URL_GET_SCHOOL_USE_INFO } from 'Common/Urls';
+import { columns, makeSelectLoading, makeSelectList, makeSelectVendors, makeSelectFilter } from '../Store/SchoolUseContants';
 
-
-class CardBindList extends Component {
+class SchoolUseInfoList extends Component {
   constructor(props) {
     super(props);
     this.columns = columns;
@@ -18,7 +18,7 @@ class CardBindList extends Component {
       this.columns.splice(0, 0, {
         title: '序号',
         align: 'center',
-        key: 'id',
+        key: 'index',
         render:(text,record,index) => {
           return <span>{(this.props.filter.pageindex) * this.props.filter.pagesize + (index+1)}</span>
         },
@@ -30,8 +30,12 @@ class CardBindList extends Component {
         align: 'center',
         render: (record) => (
           <span style={{ cursor: 'pointer' }}>
+            <span key={`useinfo-${record.id}-update`} onClick={() => this.handleUpdate(record.id)}>
+              修改
+            </span>
+            <Divider type="vertical" />
             <Popconfirm title={`确定要删除当前记录吗?`} okText="确定" cancelText="取消" onConfirm={() => this.handleDelete(record.id)}>
-              <span key={`cardbind-${record.id}-delete`}>
+              <span key={`useinfo-${record.id}-delete`}>
                 删除
               </span>
             </Popconfirm>
@@ -42,7 +46,9 @@ class CardBindList extends Component {
   }
   componentDidMount() {
     if (this.props.history.action === 'POP') {
+      /** Get All Vendors */
       this.handleSearchData();
+      getAllVendors().then(list => this.props.setAllVendors(list));
     }
   }
   componentWillUnmount() {
@@ -51,32 +57,34 @@ class CardBindList extends Component {
 
   /** Search */
   handleSearchData = (current, page) => {
-    const { pageindex, pagesize, cid, sid } = this.props.filter;
+    const { pageindex, pagesize, vendor, school } = this.props.filter;
     const params = {
-      cid: cid,
-      sid: sid,
+      vendor,
+      school,
       pageindex: current ? current : pageindex,
       pagesize: page ? page : pagesize
     };
     if (current === 0) {
       params.pageindex = 0;
     }
-    PostFetch(URL_GET_CARD_BIND_INFO, params).then(rs => {
-      this.props.getCardBindData(rs.data, rs.count);
+
+    PostFetch(URL_GET_SCHOOL_USE_INFO, { ...params }).then(rs => {
+      console.log('school use info:', rs.data)
+      this.props.getSchoolUseInfoData(rs.data, 200);
     }).catch(err => message.error(err.msg))
   }
 
   /** Update */
-  handleUpdate = (id, record) => {
-    this.props.history.push({ pathname: `/cardbind/update/${id}`, id, record });
+  handleUpdate = id => {
+    this.props.history.push({
+      pathname: `/useinfo/update/${id}`,
+      id
+    })
   }
 
   /** Delete */
   handleDelete = id => {
-    PostFetch(URL_DELETE_CARD_BIND, { ids: [id] }).then(rs => {
-      this.handleSearchData();
-      message.success('删除成功');
-    }).catch(err => message.error('删除失败'))
+    console.log('delete use info id:', id);
   }
 
   tablePagination = (current, changeSize) => {
@@ -84,16 +92,17 @@ class CardBindList extends Component {
   }
 
   render() {
-    const { list, filter, loading } = this.props;
+    const { loading, list, vendors, filter } = this.props;
     return (
       <div className='lx-school-changshang'>
-        <CardBindFilterForm
+        <SchoolUseInfoFilterForm
           filter={filter}
+          vendors={vendors}
           onResetDate={() => {
             this.props.resetDate(call => this.handleSearchData());
           }}
           onHandleSearch={param => {
-            this.props.changeFilterValue(param.cid, param.sid, call => this.handleSearchData());
+            this.props.changeFilterValue(param.school, param.vendor, param.types, call => this.handleSearchData());
           }}
         />
         <Table
@@ -107,7 +116,6 @@ class CardBindList extends Component {
           pagination={{
             total: filter.total,
             pageSize: filter.pagesize,
-            //defaultCurrent: filter.pageindex + 1,
             showSizeChanger: true,
             pageSizeOptions: ['10','20','30','50','100'],
             onShowSizeChange: (current, changeSize) => {
@@ -130,9 +138,10 @@ class CardBindList extends Component {
 
 
 const mapStateToProps = createStructuredSelector({
-  loading: makeSelectLoading,
   list: makeSelectList,
+  loading: makeSelectLoading,
+  vendors: makeSelectVendors,
   filter: makeSelectFilter
 })
 
-export default connect(mapStateToProps, { ...cbActions })(CardBindList);
+export default connect(mapStateToProps, { ...schoolUseActions })(SchoolUseInfoList);

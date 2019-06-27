@@ -7,12 +7,12 @@ import { CS_REDUCER_KEY } from './Modules/ChangShang/Store/CSContants';
 import { SB_REDUCER_KEY } from './Modules/SheBei/Store/SBContants';
 import { AZ_REDUCER_KEY } from './Modules/AnZhuang/Store/AZContants';
 import { CB_REDUCER_KEY } from './Modules/CardBind/Store/CBContants';
-import { USE_REDUCER_KEY } from './Modules/UseInfo/Store/UseContants';
+import { USE_REDUCER_KEY } from './Modules/SchoolUseInfo/Store/SchoolUseContants';
 import { ADD_HOLIDAY_REDUCER_KEY } from './Modules/AddHoliday/Store/AddHContants';
 import CSReducers from './Modules/ChangShang/Store/CSReducers';
 import SBReducers from './Modules/SheBei/Store/SBReducers';
 import AZReducer from './Modules/AnZhuang/Store/AZReducers';
-import UseReducer from './Modules/UseInfo/Store/UseReducers';
+import UseReducer from './Modules/SchoolUseInfo/Store/SchoolUseReducers';
 import CBReducer from './Modules/CardBind/Store/CBReducers';
 import AddHolidayReducer from './Modules/AddHoliday/Store/AddHReducers';
 /**

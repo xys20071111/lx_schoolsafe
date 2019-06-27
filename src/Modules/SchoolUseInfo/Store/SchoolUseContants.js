@@ -5,28 +5,30 @@ export const USE_REDUCER_KEY = 'useinfo';
 const reducerLoading = state => state[USE_REDUCER_KEY].get('loading');
 const reducerList = state => state[USE_REDUCER_KEY].get('list');
 const reducerVendors = state => state[USE_REDUCER_KEY].get('vendors');
+const reducerFilter = state => state[USE_REDUCER_KEY].get('filter');
 export const makeSelectLoading = createSelector(reducerLoading, loading => loading);
 export const makeSelectList = createSelector(reducerList, list => list ? list.toJS() : []);
 export const makeSelectVendors = createSelector(reducerVendors, list => list.toJS());
+export const makeSelectFilter = createSelector(reducerFilter, filter => filter ? filter.toJS() : {});
 
 /** table columns */
-export const columns = [{
-  title: '序号',
+export const columns = [
+{
+  title: '设备',
   align: 'center',
-  dataIndex: 'index'
-}, {
-  title: '卡号',
+  dataIndex: 'id',
+},
+{
+  title: '位置',
   align: 'center',
-  dataIndex: 'card'
-}, {
-  title: '学生姓名',
+  dataIndex: 'location',
+},
+{
+  title: '位置描述',
   align: 'center',
-  dataIndex: 'user_name'
-}, {
-  title: '班级',
-  align: 'center',
-  dataIndex: 'class_name'
-}, {
+  dataIndex: 'loc_brief',
+},
+{
   title: '学校',
   align: 'center',
   dataIndex: 'school_name',

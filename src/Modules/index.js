@@ -5,8 +5,9 @@ import ChangShang from 'Modules/ChangShang';
 import SheBeiContainer from 'Modules/SheBei';
 import AnZhuangContainer from 'Modules/AnZhuang';
 import CardBindContainer from 'Modules/CardBind';
-import UseInfoContainer from 'Modules/UseInfo';
+import SchoolUseInfoContainer from 'Modules/SchoolUseInfo';
 import AddHolidayContainer from 'Modules/AddHoliday';
+import appStr from 'Styles/JS/lxschoolsafe';
 const { Sider, Content } = Layout;
 
 /* import CardRecord from 'Modules/CardRecord'; */
@@ -19,27 +20,27 @@ class AppHome extends Component {
       >
         <Menu.Item key="1">
           <Icon type="pie-chart" />
-          <Link to="/changshang">厂商管理</Link>
+          <Link to="/changshang">{appStr.menutext.changshang}</Link>
         </Menu.Item>
         <Menu.Item key="2">
           <Icon type="desktop" />
-          <Link to="/shebei">设备管理</Link>
+          <Link to="/shebei">{appStr.menutext.shebei}</Link>
         </Menu.Item>
         <Menu.Item key="3">
           <Icon type="inbox" />
-          <Link to="/anzhuang">安装位置</Link>
+          <Link to="/anzhuang">{appStr.menutext.anzhuang}</Link>
         </Menu.Item>
         <Menu.Item key="4">
           <Icon type="car" />
-          <Link to="/useinfo">设备使用信息</Link>
+          <Link to="/useinfo">{appStr.menutext.useinfo}</Link>
         </Menu.Item>
         <Menu.Item key="5">
           <Icon type="heart" />
-          <Link to="/cardbind">一卡通绑定</Link>
+          <Link to="/cardbind">{appStr.menutext.cardbind}</Link>
         </Menu.Item>
         <Menu.Item key="6">
           <Icon type="setting" />
-          <Link to="/holiday">节假日设置</Link>
+          <Link to="/holiday">{appStr.menutext.holiday}</Link>
         </Menu.Item>
       </Menu>
     )
@@ -59,6 +60,12 @@ class AppView extends Component {
 
   getAnZhuangPostion = props => <AnZhuangContainer {...props} />
 
+  getCardBind = props => <CardBindContainer {...props} />
+
+  getHoliday = props => <AddHolidayContainer {...props} />
+
+  getSchoolUseInfo = props => <SchoolUseInfoContainer {...props} />
+
   render() {
     return (
       <div className = 'lx-school'>
@@ -71,9 +78,9 @@ class AppView extends Component {
               <Route path="/changshang" component={this.getChangShang} />
               <Route path="/shebei" component={this.getSheBeiContainer} />
               <Route path="/anzhuang" component={this.getAnZhuangPostion} />
-              <Route path="/cardbind" component={CardBindContainer} />
-              <Route path="/useinfo" component={UseInfoContainer} />
-              <Route path="/holiday" component={AddHolidayContainer} />
+              <Route path="/cardbind" component={this.getCardBind} />
+              <Route path="/useinfo" component={this.getSchoolUseInfo} />
+              <Route path="/holiday" component={this.getHoliday} />
             </Content>
           </Layout>
         </Layout>

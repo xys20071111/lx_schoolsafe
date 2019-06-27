@@ -13,6 +13,7 @@ class LocationsFilter extends React.Component {
 
   handleReset = () => {
     this.props.form.resetFields();
+    this.props.onResetDate();
   }
 
   getFields() {
@@ -45,7 +46,7 @@ class LocationsFilter extends React.Component {
             重置
           </Button>
           <Button style={{ marginRight: '50px' }}  icon="plus-circle" onClick={() => this.props.onHandleAction()}>
-            添加位置
+            设备添加
           </Button>
           <Button type="primary" htmlType="submit" icon='search'>
             搜索
@@ -60,8 +61,9 @@ class LocationsFilter extends React.Component {
     this.props.form.validateFields((err, fieldsValue) => {
       if (!err) {
         const params = {
-          school: (fieldsValue.school === '' || !fieldsValue.school) ? undefined : parseInt(fieldsValue.school),
-          type: (fieldsValue.type === -1 || !fieldsValue.type) ? undefined : fieldsValue.type,
+          school: (fieldsValue.school === null || !fieldsValue.school) ? undefined : parseInt(fieldsValue.school),
+          vendor: (fieldsValue.vendor === null || !fieldsValue.vendor) ? undefined : parseInt(fieldsValue.vendor),
+          types: (fieldsValue.type === -1 || !fieldsValue.type) ? undefined : fieldsValue.type,
         }
         console.log('params:', params, fieldsValue)
         this.props.onHandleSearch(params);
