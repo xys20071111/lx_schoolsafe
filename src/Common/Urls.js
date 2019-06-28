@@ -35,4 +35,5 @@ export const URL_DELETE_HOLIDAY         = URL_PREFIX + '/campus/admin/delholiday
 //获取学校设备使用信息
 export const URL_GET_SCHOOL_USE_INFO    = URL_PREFIX + '/campus/admin/installeddevices';
 export const URL_GET_SCHOOL_USE_ADD     = URL_PREFIX + '/campus/admin/installdevice';
+export const URL_GET_SCHOOL_USE_UPDATE     = URL_PREFIX + '/campus/admin/installdevice';
 export const URL_GET_SCHOOL_USE_DELETE  = URL_PREFIX + '/campus/admin/uninstalldevice';

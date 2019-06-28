@@ -7,8 +7,8 @@ export const RESET_DATA ='card/bind/reset/data';
 
 
 /** 获取安装位置数据 */
-export const getCardBindData = (list,count) => ({
-  type: GET_CARD_BIND_LIST, list, count
+export const getCardBindData = (list,count,pageindex) => ({
+  type: GET_CARD_BIND_LIST, list, count,pageindex
 })
 
 /** 赋值当前第几页 */

@@ -62,7 +62,7 @@ class CardBindList extends Component {
       params.pageindex = 0;
     }
     PostFetch(URL_GET_CARD_BIND_INFO, params).then(rs => {
-      this.props.getCardBindData(rs.data, rs.count);
+      this.props.getCardBindData(rs.data, rs.count,params.pageindex);
     }).catch(err => message.error(err.msg))
   }
 

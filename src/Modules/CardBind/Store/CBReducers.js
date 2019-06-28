@@ -16,10 +16,10 @@ const homeInitState = fromJS({
 const CBReducer = (state = homeInitState, action) => {
   switch (action.type) {
     case GET_CARD_BIND_LIST: {
-      const { list = [], count = 0 } = action;
+      const { list = [], count = 0, pageindex = 0 } = action;
       return state.update('list', () => fromJS(list))
                   .update('loading', () => false)
-                  .updateIn(['filter', 'pageindex'], () => 0)
+                  .updateIn(['filter', 'pageindex'], () => pageindex)
                   .updateIn(['filter', 'total'], () => count);
     }
     case SET_PAGE_INDEX: return state.setIn(['filter', 'pageindex'], action.index - 1);

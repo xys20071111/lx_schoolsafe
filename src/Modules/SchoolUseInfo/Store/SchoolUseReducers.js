@@ -5,13 +5,15 @@ import {
   SET_SCHOOL_PAGE_INDEX,
   SET_SCHOOL_PAGE_SIZE,
   SET_SCHOOL_FILTER_VALUE,
+  SET_SCHOOL_SHE_BEI_LIST,
   RESET_SCHOOL_DATA,
 } from './SchoolUseActions';
 
 const homeInitState = fromJS({
   loading: true,
   list: [],
-  vendors: [],
+  vendors: [], // 厂商
+  devices: [], // 设备
   filter: {
     pageindex: 0,
     pagesize: 10,
@@ -25,15 +27,21 @@ const homeInitState = fromJS({
 const UseReducer = (state = homeInitState, action) => {
   switch (action.type) {
     case GET_SCHOOL_USE_INFO_LIST: {
-      const { list = [], count = 0 } = action;
-      return state.update('list', () => fromJS(list))
+      const filter = state.get('filter');
+      const { list = [], count = 0, pageindex = 0 } = action;
+
+      const newList = list.map((item,index) => {
+        item.index = filter.get('pageindex') * filter.get('pagesize') + (index+1);
+        return item;
+      });
+
+      return state.update('list', () => fromJS(newList))
                   .update('loading', () => false)
-                  .updateIn(['filter', 'pageindex'], () => 0)
+                  .updateIn(['filter', 'pageindex'], () => pageindex)
                   .updateIn(['filter', 'total'], () => count);
     }
-    case SET_SCHOOL_USE_INFO_VENDORS: {
-      return state.update('vendors', () => fromJS(action.list));
-    }
+    case SET_SCHOOL_USE_INFO_VENDORS: return state.update('vendors', () => fromJS(action.list));
+    case SET_SCHOOL_SHE_BEI_LIST: return state.update('devices', () => fromJS(action.list));
     case SET_SCHOOL_PAGE_INDEX: return state.setIn(['filter', 'pageindex'], action.index - 1);
     case SET_SCHOOL_PAGE_SIZE: return state.setIn(['filter', 'pagesize'], action.size);
     case RESET_SCHOOL_DATA: {
