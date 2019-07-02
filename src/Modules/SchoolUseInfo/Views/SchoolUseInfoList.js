@@ -7,7 +7,7 @@ import { createStructuredSelector } from 'reselect';
 import SchoolUseInfoFilterForm from 'Modules/SchoolUseInfo/Views/SchoolUseInfoFilterForm';
 import { Table, message, Popconfirm, Divider } from 'antd';
 import { getAllVendors } from 'Modules/SheBei/Store/SBContants';
-import { URL_GET_SCHOOL_USE_INFO, URL_GET_DEVICES_INFO } from 'Common/Urls';
+import { URL_GET_SCHOOL_USE_INFO, URL_GET_DEVICES_INFO, URL_GET_SCHOOL_USE_DELETE } from 'Common/Urls';
 import { columns, makeSelectLoading, makeSelectList, makeSelectVendors, makeSelectFilter } from '../Store/SchoolUseContants';
 
 class SchoolUseInfoList extends Component {
@@ -68,6 +68,7 @@ class SchoolUseInfoList extends Component {
     }
 
     PostFetch(URL_GET_SCHOOL_USE_INFO, { ...params }).then(rs => {
+      console.log('rsdata:',rs.data)
       this.props.getSchoolUseInfoData(rs.data, rs.count, params.pageindex);
     }).catch(err => message.error(err.msg))
   }
@@ -82,7 +83,10 @@ class SchoolUseInfoList extends Component {
 
   /** Delete */
   handleDelete = id => {
-    console.log('delete use info id:', id);
+    PostFetch(URL_GET_SCHOOL_USE_DELETE, { ids: [id] }).then(rs => {
+      message.success('删除成功')
+      this.handleSearchData();
+    }).catch(err => message.error('删除失败'))
   }
 
   tablePagination = (current, changeSize) => {

@@ -1,4 +1,3 @@
-import moment from 'moment';
 import _ from 'lodash';
 import { createSelector } from 'reselect';
 import { AZ_POSITION_NUMBER_OPTIONS } from 'Modules/AnZhuang/Store/AZContants';
@@ -16,18 +15,15 @@ export const makeSelectFilter = createSelector(reducerFilter, filter => filter ?
 export const makeSelectDevices = createSelector(reducerDevices, list => list.toJS());
 
 /** table columns */
-export const columns = [
-{
+export const columns = [{
   title: '序号',
   align: 'center',
   dataIndex: 'index'
-},
-{
-  title: '设备',
+}, {
+  title: '位置编号',
   align: 'center',
-  dataIndex: 'id',
-},
-{
+  dataIndex: 'loc_num',
+}, {
   title: '位置类型',
   align: 'center',
   dataIndex: 'loc_type',
@@ -38,31 +34,16 @@ export const columns = [
     }
     return '';
   }
-},
-{
-  title: '位置',
-  align: 'center',
-  dataIndex: 'location',
-},
-{
+}, {
   title: '位置描述',
   align: 'center',
   dataIndex: 'loc_brief',
-},
-{
+}, {
   title: '学校',
   align: 'center',
   dataIndex: 'school_name',
 }, {
-  title: '录入时间',
+  title: '学校ID',
   align: 'center',
-  dataIndex: 'create_time',
-  sorter: (a, b) => moment(a.create_time).format('YYYY-MM-DD HH:mm:ss') > moment(b.create_time).format('YYYY-MM-DD HH:mm:ss'),
-  render: text => moment(text).format('YYYY-MM-DD HH:mm:ss'),
-}, {
-  title: '更新时间',
-  align: 'center',
-  dataIndex: 'update_time',
-  sorter: (a, b) => moment(a.update_time).format('YYYY-MM-DD HH:mm:ss') > moment(b.update_time).format('YYYY-MM-DD HH:mm:ss'),
-  render: text => moment(text).format('YYYY-MM-DD HH:mm:ss'),
+  dataIndex: 'school',
 }];

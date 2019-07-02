@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { PostFetch } from 'Common/Helpers';
 import { createStructuredSelector } from 'reselect';
 import CardBindFilterForm from 'Modules/CardBind/Views/CardBindFilterForm';
-import { Table, message, Popconfirm, Divider } from 'antd';
+import { Table, message, Popconfirm } from 'antd';
 import { columns, makeSelectList, makeSelectFilter, makeSelectLoading } from '../Store/CBContants';
 import { URL_GET_CARD_BIND_INFO, URL_DELETE_CARD_BIND } from 'Common/Urls';
 import * as cbActions from '../Store/CBActions';
@@ -15,15 +15,6 @@ class CardBindList extends Component {
     super(props);
     this.columns = columns;
     if (!_.find(this.columns, item => item.key && item.key === 'action')) {
-      this.columns.splice(0, 0, {
-        title: '序号',
-        align: 'center',
-        key: 'id',
-        render:(text,record,index) => {
-          return <span>{(this.props.filter.pageindex) * this.props.filter.pagesize + (index+1)}</span>
-        },
-      });
-
       this.columns.push({
         title: 'Action',
         key: 'action',

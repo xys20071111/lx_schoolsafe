@@ -11,6 +11,11 @@ export const makeSelectFilter = createSelector(reducerFilter, filter => filter ?
 
 /** table columns */
 export const columns = [{
+  title: '序号',
+  align: 'center',
+  key: 'id',
+  dataIndex: 'index'
+}, {
   title: '卡号',
   align: 'center',
   dataIndex: 'card'
@@ -23,9 +28,17 @@ export const columns = [{
   align: 'center',
   dataIndex: 'class_name'
 }, {
+  title: '班级ID',
+  align: 'center',
+  dataIndex: 'class'
+}, {
   title: '学校',
   align: 'center',
   dataIndex: 'school_name',
+}, {
+  title: '学校ID',
+  align: 'center',
+  dataIndex: 'school',
 }, {
   title: '录入时间',
   align: 'center',
