@@ -53,7 +53,6 @@ class LocationsFilter extends React.Component {
         const params = {
           school: (fieldsValue.school === null || !fieldsValue.school) ? undefined : parseInt(fieldsValue.school),
           vendor: (fieldsValue.vendor === null || !fieldsValue.vendor) ? undefined : parseInt(fieldsValue.vendor),
-          types: (fieldsValue.type === -1 || !fieldsValue.type) ? undefined : fieldsValue.type,
         }
         console.log('params:', params, fieldsValue)
         this.props.onHandleSearch(params);

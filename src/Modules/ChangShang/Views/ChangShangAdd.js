@@ -1,19 +1,11 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import { PostFetch } from 'Common/Helpers';
 import CardHeader from 'Modules/Components/CardHeader';
+import { formItemLayout } from 'Modules/ChangShang/Store/CSContants';
 import { Form, Input, Button, Card, Row, Col, Icon, message, Select } from 'antd';
 import { URL_GET_FIRM_ADD, URL_GET_FIRM_INFO, URL_GET_FIRM_UPDATE } from 'Common/Urls';
 const { Option } = Select;
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 12 },
-    sm: { span: 8 },
-  },
-  wrapperCol: {
-    xs: { span: 12 },
-    sm: { span: 8 },
-  },
-};
 
 class ChangShangInputForm extends Component {
   getFileds = () => {
@@ -28,19 +20,12 @@ class ChangShangInputForm extends Component {
       </Select>,
     );
 
-
-
     return (
       <Card>
         <Form.Item {...formItemLayout} label='厂商名称' >
           {getFieldDecorator('name', {
             initialValue: editData.name,
-            rules: [
-              {
-                required: true,
-                message: '请输入厂商名称',
-              },
-            ],
+            rules: [{ required: true, message: '请输入厂商名称' }]
           })(<Input placeholder='输入厂商名称' />)}
         </Form.Item>
 
@@ -55,16 +40,7 @@ class ChangShangInputForm extends Component {
         <Form.Item label='联系电话' {...formItemLayout}>
           {getFieldDecorator('phone', {
             initialValue: editData.phone,
-            rules: [
-              {
-                message:'只能输入数字',
-                pattern: /^[0-9]+$/
-              },
-              {
-                len: 11,
-                message: '长度需11个数字',
-              }
-            ]
+            rules: [{ message:'只能输入数字', pattern: /^[0-9]+$/ }, { len: 11, message: '长度需11个数字' }]
           })(<Input addonBefore={prefixSelector} style={{ width: '100%' }} />)}
         </Form.Item>
 
@@ -97,9 +73,9 @@ class ChangShangInputForm extends Component {
         const values = {
           id: this.props.editData.id,
           name: fieldsValue['name'],
-          address: fieldsValue['address'],
-          contact: fieldsValue['contact'],
-          phone: fieldsValue['phone'],
+          address: !_.isNull(fieldsValue['address']) ? fieldsValue['address'] : '',
+          contact: !_.isNull(fieldsValue['contact']) ? fieldsValue['contact'] : '',
+          phone: !_.isNull(fieldsValue['phone']) ? fieldsValue['phone'] : '',
         };
         this.props.onHandleSearch(values);
       }
@@ -114,8 +90,8 @@ class ChangShangInputForm extends Component {
     )
   }
 }
-
 const ChangShangForm = Form.create({ name: 'chang_shang_add_form' })(ChangShangInputForm)
+
 
 export default class ChangShangAdd extends Component {
   constructor(props) {
@@ -125,7 +101,6 @@ export default class ChangShangAdd extends Component {
       editData: {}
     }
   }
-
   componentDidMount() {
     if (this.state.editDataId) {
       PostFetch(URL_GET_FIRM_INFO, { ids: [this.state.editDataId] }).then(rs => {
@@ -135,16 +110,22 @@ export default class ChangShangAdd extends Component {
       })
     }
   }
-
   /** save */
   onHandleSubmit = (vals) => {
-    const { type = 'add' } = this.props;
+    const { type = 'add', history } = this.props;
     let [urls,msg] = [URL_GET_FIRM_ADD, '添加'];
     if (type === 'update') {
       urls = URL_GET_FIRM_UPDATE;
       msg = '更新'
     }
-    PostFetch(urls, { ...vals }).then(rs => message.info(`${msg}成功`)).catch(err => {
+    PostFetch(urls, { ...vals }).then(rs => {
+      if (rs.result === 0) {
+        message.info(`${msg}成功`);
+        history.goBack();
+      } else {
+        throw(rs.msg);
+      }
+    }).catch(err => {
       message.info(`${msg}厂商信息失败`)
       console.log(`${msg}厂商信息失败`,err)
     })

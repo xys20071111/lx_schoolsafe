@@ -1,21 +1,13 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import { PostFetch } from 'Common/Helpers';
 import CardHeader from 'Modules/Components/CardHeader';
+import { formItemLayout, formItemLayout2 } from 'Modules/ChangShang/Store/CSContants';
 import { AZ_POSITION_NUMBER_OPTIONS } from 'Modules/AnZhuang/Store/AZContants';
-import { Form, Input, Button, Card, Row, Col, Icon, message, Select, InputNumber } from 'antd';
+import { Form, Input, Button, Card, Row, Col, Icon, message, Select, InputNumber, TimePicker } from 'antd';
 import { URL_GET_LOCATIONS_ADD, URL_GET_LOCATIONS_INFO, URL_GET_LOCATIONS_UPDATE } from 'Common/Urls';
 const { Option } = Select;
 const { TextArea } = Input;
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 12 },
-    sm: { span: 8 },
-  },
-  wrapperCol: {
-    xs: { span: 12 },
-    sm: { span: 8 },
-  },
-};
 
 
 class LocationsFormInputForm extends Component {
@@ -28,7 +20,9 @@ class LocationsFormInputForm extends Component {
     const { editData, type } = this.props;
     const { getFieldDecorator } = this.props.form;
     const disabled = (type === 'update') ? true : false;
-
+    const openTime = editData.open_time ? new Date(editData.open_time) : undefined;
+    const closeTime = editData.close_time ? new Date(editData.close_time) : undefined;
+console.log('editData:',editData)
     return (
       <Card>
         <Form.Item {...formItemLayout} label='学校ID' >
@@ -58,19 +52,31 @@ class LocationsFormInputForm extends Component {
           })(this.getAllTypes())}
         </Form.Item>
 
-        {/* <Row gutter={16}>
-          <Col span={4} offset={7}>
+        <Row gutter={24}>
+          <Col span={6} offset={6}>
             <Form.Item label='开门时间' {...formItemLayout}>
-              {getFieldDecorator('open_time', { initialValue: moment(editData.open_time, 'HH:mm:ss') })(<TimePicker format={format} />)}
+              {getFieldDecorator('open_time', {
+                initialValue: openTime ? moment({
+                  hour: openTime.getHours(),
+                  minute: openTime.getMinutes(),
+                  seconds: openTime.getSeconds()
+                }) : moment({ hour: 24, minute: 0 })
+              })(<TimePicker format={'HH:mm:ss'} />)}
             </Form.Item>
           </Col>
 
           <Col span={4}>
             <Form.Item label='关门时间' {...formItemLayout2}>
-              {getFieldDecorator('close_time')(<TimePicker format={format} />)}
+              {getFieldDecorator('close_time', {
+                initialValue: closeTime ? moment({
+                  hour: closeTime.getHours(),
+                  minute: closeTime.getMinutes(),
+                  seconds: closeTime.getSeconds()
+                }) : moment({ hour: 23, minute: 0 })
+              })(<TimePicker format={'HH:mm:ss'} />)}
             </Form.Item>
           </Col>
-        </Row> */}
+        </Row>
 
         <Form.Item label='位置描述' {...formItemLayout}>
           {getFieldDecorator('brief', { initialValue: editData.brief })(<TextArea rows={5} placeholder='请输入位置描述'/>)}
@@ -108,6 +114,8 @@ class LocationsFormInputForm extends Component {
           type: fieldsValue['type'],
           number: fieldsValue['number'],
           brief: fieldsValue['brief'],
+          open_time: fieldsValue['open_time'].format('HH:mm:ss'),
+          close_time: fieldsValue['close_time'].format('HH:mm:ss'),
         };
         this.props.onHandleSearch(values);
       }
@@ -146,7 +154,7 @@ class AnZhuangAdd extends Component {
 
   /** save */
   onHandleSubmit = (vals) => {
-    const { type = 'add' } = this.props;
+    const { type = 'add', history } = this.props;
     let [urls,msg] = [URL_GET_LOCATIONS_ADD, '添加'];
     if (type === 'update') {
       urls = URL_GET_LOCATIONS_UPDATE;
@@ -155,9 +163,15 @@ class AnZhuangAdd extends Component {
     console.log('5555555555555:',vals)
     PostFetch(urls, { ...vals }).then(rs => {
       console.log('6666666666666:',rs)
-      message.info(`${msg}成功`);
+      if (rs.result === 0) {
+        message.info(`${msg}成功`);
+        history.goBack();
+      } else {
+        throw(rs.msg);
+      }
     }).catch(err => {
-      message.info(`${msg}位置信息失败`)
+      message.error(`${msg}位置信息失败`);
+      console.log(`${msg}位置信息失败`,err);
     })
   }
 

@@ -2,24 +2,16 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { PostFetch } from 'Common/Helpers';
+import appStr from 'Styles/JS/lxschoolsafe';
 import CardHeader from 'Modules/Components/CardHeader';
 import { createStructuredSelector } from 'reselect';
+import { formItemLayout } from 'Modules/ChangShang/Store/CSContants';
 import { AZ_POSITION_NUMBER_OPTIONS } from 'Modules/AnZhuang/Store/AZContants';
 import { makeSelectVendors, makeSelectDevices } from '../Store/SchoolUseContants';
 import { Form, Input, Button, Card, Row, Col, Icon, message, Select, InputNumber } from 'antd';
-import { URL_GET_SCHOOL_USE_ADD, URL_GET_SCHOOL_USE_UPDATE, URL_GET_LOCATIONS_INFO } from 'Common/Urls';
+import { URL_GET_SCHOOL_USE_ADD, URL_GET_SCHOOL_USE_UPDATE, URL_GET_LOCATIONS_INFO, URL_GET_SCHOOL_USE_INFO } from 'Common/Urls';
 const { Option } = Select;
 const { TextArea } = Input;
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 12 },
-    sm: { span: 8 },
-  },
-  wrapperCol: {
-    xs: { span: 12 },
-    sm: { span: 8 },
-  },
-};
 
 class SchoolUseInputForm extends Component {
   /**学校字段 */
@@ -81,7 +73,7 @@ class SchoolUseInputForm extends Component {
   }
   /**获取安装位置 */
   getLocationFiled = () => {
-    const { location } = this.props;
+    const { location, editData } = this.props;
     const allOptions = location.map(option => {
       const locaType = _.find(AZ_POSITION_NUMBER_OPTIONS, loca => _.isEqual(loca.id, option.type));
       return <Option key={option.id} value={option.id}>
@@ -92,7 +84,7 @@ class SchoolUseInputForm extends Component {
     return <Form.Item {...formItemLayout} label='安装位置'>
       {this.props.form.getFieldDecorator('location', {
         rules: [{ required: true, message: '请选择位置类型'}],
-
+        initialValue: editData && editData.location
       })(<Select placeholder='请输入学校ID以查询学校位置'>{allOptions}</Select>)}
     </Form.Item>
   }
@@ -170,12 +162,22 @@ const SchoolUseForm = Form.create({ name: 'chool_useinfo_add_form' })(SchoolUseI
 class SchoolUseInfoAdd extends Component {
   constructor(props) {
     super(props);
-    this.editData = props.type === 'update' ? props.location.record : {};
     this.state = {
-      location: []
+      editDataId: props.type === 'update' ? parseInt(props.match.params.id) : undefined,
+      location: [],
+      editData: {}
     }
     if (_.isEqual(props.type, 'update') && props.location.record) {
       this.searchLocation(props.location.record.school);
+    }
+  }
+  componentDidMount() {
+    if (this.state.editDataId) {
+      PostFetch(URL_GET_SCHOOL_USE_INFO, { id: this.state.editDataId }).then(rs => {
+        if (rs.result === 0 && rs.data && rs.data.length > 0) {
+          this.setState({ editData: rs.data[0] })
+        }
+      })
     }
   }
   /** save */
@@ -187,13 +189,14 @@ class SchoolUseInfoAdd extends Component {
     }
 
     PostFetch(urls, { devices: [vals] }).then(rs => {
-      if (rs.data && !rs.data[0].state) {
-        message.info(rs.data[0].msg);
-      } else {
+      if (rs.data && rs.data[0].state) {
         message.info(`${msg}成功`);
+        this.props.history.goBack();
+      } else {
+        throw(rs.data[0].msg);
       }
     }).catch(err => {
-      message.info(`${msg}设备信息失败`)
+      message.error(`${msg}设备信息失败`);
       console.log(`${msg}设备信息失败`,err)
     })
   }
@@ -217,13 +220,13 @@ class SchoolUseInfoAdd extends Component {
     return (
       <div className='lx-school-action'>
         <CardHeader
-          leftTitle='学校设备使用信息'
+          leftTitle={appStr.menutext.useinfo}
           leftTitleChildren={[ headerTitle ]}
         />
         <SchoolUseForm
           {...this.props}
           location={this.state.location}
-          editData={this.editData}
+          editData={this.state.editData}
           goBackPage={() => history.goBack()}
           onHandleSearch={vals => this.onHandleSubmit(vals)}
           searchSchoolLocation={schoolId => this.searchLocation(schoolId)}

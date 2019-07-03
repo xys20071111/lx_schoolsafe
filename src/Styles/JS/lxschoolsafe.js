@@ -3,7 +3,7 @@ const appStr = {
     changshang: '厂商管理',
     shebei: '设备管理',
     anzhuang: '安装位置',
-    useinfo: '学校设备信息',
+    useinfo: '学校设备安装信息',
     cardbind: '一卡通绑定',
     holiday: '节假日设置'
   }

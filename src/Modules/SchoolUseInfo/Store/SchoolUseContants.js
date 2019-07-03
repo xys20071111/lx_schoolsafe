@@ -20,30 +20,38 @@ export const columns = [{
   align: 'center',
   dataIndex: 'index'
 }, {
-  title: '位置编号',
-  align: 'center',
-  dataIndex: 'loc_num',
-}, {
-  title: '位置类型',
+  title: '位置',
   align: 'center',
   dataIndex: 'loc_type',
-  render: id => {
+  render: (id, record) => {
     const lmp = _.find(AZ_POSITION_NUMBER_OPTIONS, types => types.id === id);
     if (lmp) {
-      return lmp.name;
+      return lmp.name + ' - ' + (record.loc_num ? record.loc_num : '');
     }
     return '';
   }
 }, {
-  title: '位置描述',
+  title: '厂商名称',
   align: 'center',
-  dataIndex: 'loc_brief',
+  dataIndex: 'vendor_name',
+}, {
+  title: '设备型号',
+  align: 'center',
+  dataIndex: 'dev_model',
+}, {
+  title: '设备序列号',
+  align: 'center',
+  dataIndex: 'dev_serial',
+}, {
+  title: '学校ID',
+  align: 'center',
+  dataIndex: 'school',
 }, {
   title: '学校',
   align: 'center',
   dataIndex: 'school_name',
 }, {
-  title: '学校ID',
+  title: '描述',
   align: 'center',
-  dataIndex: 'school',
+  dataIndex: 'brief',
 }];

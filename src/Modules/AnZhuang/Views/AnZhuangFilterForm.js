@@ -1,14 +1,12 @@
 import React from 'react';
 import { AZ_POSITION_NUMBER_OPTIONS } from 'Modules/AnZhuang/Store/AZContants';
-import { Form, Row, Col, Input, Button, Select, Card, InputNumber } from 'antd';
+import { Form, Row, Col, Input, Button, Select, Card } from 'antd';
 const { Option } = Select;
-
 
 class LocationsFilter extends React.Component {
   handleReset = () => {
     this.props.form.resetFields();
   }
-
   getFields() {
     const { getFieldDecorator } = this.props.form;
     const options = AZ_POSITION_NUMBER_OPTIONS.map(option => <Option key={`anzhuang_type_${option.id}`} value={option.id}>{option.name}</Option>);
@@ -16,8 +14,8 @@ class LocationsFilter extends React.Component {
     return (
       <Row gutter={25}>
         <Col span={5}>
-          <Form.Item label='学校id'>
-            {getFieldDecorator('school')(<Input placeholder='请输入学校Id'/>)}
+          <Form.Item label='学校ID'>
+            {getFieldDecorator('school')(<Input placeholder='请输入学校ID'/>)}
           </Form.Item>
         </Col>
 
@@ -29,12 +27,7 @@ class LocationsFilter extends React.Component {
             </Select>)}
           </Form.Item>
         </Col>
-        <Col span={5}>
-          <Form.Item label='位置编号' >
-            {getFieldDecorator('number')(<InputNumber min={0} max={99999999999999} placeholder='请输入位置编号' />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
+        <Col span={7}>
           <Button style={{ marginRight: '50px', marginLeft: '50px' }} onClick={this.handleReset}>
             重置
           </Button>
@@ -48,21 +41,18 @@ class LocationsFilter extends React.Component {
       </Row>
     )
   }
-
   handleSearch = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, fieldsValue) => {
       if (!err) {
         const params = {
           school: (fieldsValue.school === '' || !fieldsValue.school) ? undefined : parseInt(fieldsValue.school),
-          type: (fieldsValue.type === -1 || !fieldsValue.type) ? undefined : fieldsValue.type,
+          type: (fieldsValue.type === -1) ? undefined : fieldsValue.type,
         }
-        console.log('params:', params, fieldsValue)
         this.props.onHandleSearch(params);
       }
     });
   }
-
   render() {
     return (
       <Card>
@@ -73,5 +63,6 @@ class LocationsFilter extends React.Component {
     );
   }
 }
+
 const AnZhuangFilterForm = Form.create({ name: 'shebei_filter' })(LocationsFilter);
 export default AnZhuangFilterForm;

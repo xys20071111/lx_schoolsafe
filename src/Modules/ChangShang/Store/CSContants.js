@@ -7,6 +7,28 @@ const reducerList = state => state[CS_REDUCER_KEY].get('list');
 export const makeSelectLoading = createSelector(reducerLoading, loading => loading);
 export const makeSelectList = createSelector(reducerList, list => list.toJS());
 
+export const formItemLayout = {
+  labelCol: {
+    xs: { span: 12 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 12 },
+    sm: { span: 8 },
+  },
+};
+export const formItemLayout2 = {
+  labelCol: {
+    xs: { span: 6 },
+    sm: { span: 10 },
+  },
+  wrapperCol: {
+    xs: { span: 6 },
+    sm: { span: 8 },
+  },
+};
+
+
 /** table columns */
 export const columns = [{
   title: '序号',
