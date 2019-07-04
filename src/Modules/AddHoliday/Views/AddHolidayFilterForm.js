@@ -1,42 +1,28 @@
 import React from 'react';
-import { Form, Row, Col, Button, Card, DatePicker } from 'antd';
 import moment from 'moment';
+import { Form, Row, Col, Button, Card, DatePicker } from 'antd';
+import { formItemLayout3 } from 'Modules/ChangShang/Store/CSContants';
 const { RangePicker } = DatePicker;
 const DATE_FORMAT = 'YYYY-MM-DD';
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 6 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 14 },
-    sm: { span: 14 },
-  },
-};
 
 
 class AddHolidayFilter extends React.Component {
   handleReset = () => {
     this.props.form.resetFields();
-  }
-
-  /**获取指定月份的开始日期和结束日期 */
-  getMonthDateRange = (n = 0) => {
-    const startDate = moment().month(moment().month() + n).startOf('month').format(DATE_FORMAT);
-    const endDate = moment().month(moment().month() + n).endOf('month').format(DATE_FORMAT);
-    return [startDate, endDate];
+    this.props.resetFields();
   }
 
   getFields() {
+    const { filter, onHandleRange } = this.props;
     const { getFieldDecorator } = this.props.form;
     return (
       <Row gutter={25}>
         <Col span={8}>
-          <Form.Item label='选择区间日期' {...formItemLayout}>
+          <Form.Item label='选择区间日期' {...formItemLayout3}>
             {getFieldDecorator('rangePicker', {
               rules: [{ required: true, message: '请选择日期' }],
-              initialValue: [moment(this.getMonthDateRange()[0], DATE_FORMAT), moment(this.getMonthDateRange()[1],DATE_FORMAT)]
-            })(<RangePicker format={DATE_FORMAT}  />)}
+              initialValue: [moment(filter.begin), moment(filter.end)]
+            })(<RangePicker format={DATE_FORMAT} onChange={range => onHandleRange(moment(range[0]).format(DATE_FORMAT), moment(range[1]).format(DATE_FORMAT))} />)}
           </Form.Item>
         </Col>
 

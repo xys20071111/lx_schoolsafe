@@ -1,13 +1,13 @@
-import { connect } from 'react-redux'
 import _ from 'lodash'
+import { connect } from 'react-redux'
 import React, { Component } from 'react';
 import { PostFetch } from 'Common/Helpers';
-import { createStructuredSelector } from 'reselect';
-import AddHolidayFilterForm from 'Modules/AddHoliday/Views/AddHolidayFilterForm';
 import { Table, message, Popconfirm } from 'antd';
-import { makeSelectLoading, makeSelectList, columns } from '../Store/AddHContants';
+import { createStructuredSelector } from 'reselect';
 import { URL_GET_HOLIDAY_LIST, URL_DELETE_HOLIDAY } from 'Common/Urls';
-import { getHolidayData } from '../Store/AddHActions';
+import AddHolidayFilterForm from 'Modules/AddHoliday/Views/AddHolidayFilterForm';
+import { getHolidayData, setHolidayRange, resetHolidayData } from '../Store/AddHActions';
+import { makeSelectLoading, makeSelectList, columns, makeSelectFilter } from '../Store/AddHContants';
 
 class AddHolidayList extends Component {
   constructor(props) {
@@ -31,10 +31,13 @@ class AddHolidayList extends Component {
       })
     }
   }
+  componentDidMount() {
+    this.handleSearchData();
+  }
   /** Search */
-  handleSearchData = (params) => {
-    this.filter = params;
-    PostFetch(URL_GET_HOLIDAY_LIST, { ...params }).then(rs => {
+  handleSearchData = (param) => {
+    const filter = param ? param : this.props.filter;
+    PostFetch(URL_GET_HOLIDAY_LIST, { ...filter }).then(rs => {
       this.props.getHolidayData(rs.data);
     }).catch(err => message.error(err.msg))
   }
@@ -42,18 +45,28 @@ class AddHolidayList extends Component {
   /** Delete */
   handleDelete = date => {
     PostFetch(URL_DELETE_HOLIDAY, { dates: [date] }).then(rs => {
-      message.success('删除成功')
-      this.handleSearchData(this.filter);
+      if (rs.result === 0) {
+        message.success('删除成功')
+        this.handleSearchData();
+      } else {
+        throw(rs.msg);
+      }
     }).catch(err => message.error('删除失败'))
   }
 
   render() {
-    const { loading, list, history } = this.props;
+    const { loading, list, history, filter, setHolidayRange, resetHolidayData } = this.props;
     return (
       <div className='lx-school-changshang'>
         <AddHolidayFilterForm
+          filter={filter}
           onHandleAddHoliday={() => history.push('/holiday/add')}
           onHandleSearch={param => this.handleSearchData(param)}
+          onHandleRange={(start, end) => setHolidayRange(start, end)}
+          resetFields={() => {
+            resetHolidayData();
+            this.handleSearchData();
+          }}
         />
         <Table
           bordered
@@ -72,7 +85,8 @@ class AddHolidayList extends Component {
 
 const mapStateToProps = createStructuredSelector({
   list: makeSelectList,
-  loading: makeSelectLoading
+  loading: makeSelectLoading,
+  filter: makeSelectFilter
 })
 
-export default connect(mapStateToProps, { getHolidayData })(AddHolidayList);
+export default connect(mapStateToProps, { getHolidayData, setHolidayRange, resetHolidayData })(AddHolidayList);

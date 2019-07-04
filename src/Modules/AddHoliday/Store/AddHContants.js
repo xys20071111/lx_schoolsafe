@@ -3,8 +3,10 @@ import { createSelector } from 'reselect';
 export const ADD_HOLIDAY_REDUCER_KEY = 'addholiday';
 const reducerLoading = state => state[ADD_HOLIDAY_REDUCER_KEY].get('loading');
 const reducerList = state => state[ADD_HOLIDAY_REDUCER_KEY].get('list');
+const reducerFilter = state => state[ADD_HOLIDAY_REDUCER_KEY].get('filter');
 export const makeSelectLoading = createSelector(reducerLoading, loading => loading);
 export const makeSelectList = createSelector(reducerList, list => list ? list.toJS() : []);
+export const makeSelectFilter = createSelector(reducerFilter, filter => filter ? filter.toJS() : {});
 
 /** table columns */
 export const columns = [{
@@ -29,7 +31,7 @@ export const getYearAndMonthAndDay = (start,end) => {
   const endTime = getDate(end);
   while ((endTime.getTime() - startTime.getTime()) >= 0) {
     const year = startTime.getFullYear();
-    const month = startTime.getMonth().toString().length === 1 ? "0" + (parseInt(startTime.getMonth().toString(),10) + 1) : (startTime.getMonth() + 1);
+    const month = (startTime.getMonth() + 1).toString().length === 1 ? "0" + (parseInt(startTime.getMonth().toString(),10) + 1) : (startTime.getMonth() + 1);
     const day = startTime.getDate().toString().length === 1 ? "0" + startTime.getDate() : startTime.getDate();
     dateArr.push(`${year}-${month}-${day}`);
     startTime.setDate(startTime.getDate() + 1);

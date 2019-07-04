@@ -27,6 +27,17 @@ export const formItemLayout2 = {
     sm: { span: 8 },
   },
 };
+export const formItemLayout3 = {
+  labelCol: {
+    xs: { span: 6 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 14 },
+    sm: { span: 14 },
+  },
+};
+
 
 
 /** table columns */

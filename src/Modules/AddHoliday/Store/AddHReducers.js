@@ -1,9 +1,15 @@
+import moment from 'moment';
 import { fromJS } from 'immutable';
-import { GET_HOLIDAY_LIST } from './AddHActions';
+import { GET_HOLIDAY_LIST, SET_HOLIDAY_RANGE, RESET_HOLIDAY_DATE } from './AddHActions';
+const DATE_FORMAT = 'YYYY-MM-DD';
 
 const homeInitState = fromJS({
   loading: false,
-  list: []
+  list: [],
+  filter: {
+    begin: moment().month(moment().month()).startOf('month').format(DATE_FORMAT),
+    end: moment().month(moment().month()).endOf('month').format(DATE_FORMAT)
+  }
 })
 
 const AddHolidayReducer = (state = homeInitState, action) => {
@@ -17,6 +23,11 @@ const AddHolidayReducer = (state = homeInitState, action) => {
       return state.update('list', () => fromJS(newList))
                   .update('loading', () => false);
     }
+    case SET_HOLIDAY_RANGE: {
+      return state.setIn(['filter', 'begin'], action.start)
+                  .setIn(['filter', 'end'], action.end);
+    }
+    case RESET_HOLIDAY_DATE: return homeInitState;
     default:
       return state;
   }

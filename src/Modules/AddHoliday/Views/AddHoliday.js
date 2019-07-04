@@ -187,10 +187,20 @@ const AddHolidayForm = Form.create({ name: 'add_holiday_form' })(AddHolidayInput
 class AddHoliday extends Component {
   /** save */
   onHandleSubmit = (dates) => {
+    if (dates && dates.length === 0) {
+      message.warning('请选择日期');
+      return;
+    }
     PostFetch(URL_ADD_HOLIDAY, { dates }).then(rs => {
-      message.success('添加成功');
+      if (rs.result === 0) {
+        message.success('添加成功');
+        this.props.history.goBack();
+      } else {
+        throw(rs.msg);
+      }
     }).catch(err => {
-      message.error('添加失败')
+      message.error('添加失败');
+      console.log(err);
     })
   }
 
